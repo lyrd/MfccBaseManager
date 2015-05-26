@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using OperationWithFiles;
 using System.IO;
 using SubtitleCreator;
+using System.Diagnostics;
 
 namespace MfccBaseManager
 {
@@ -25,8 +26,26 @@ namespace MfccBaseManager
         private string word = "";
         private double[] mfcc;
         private string audioFile = "";
+        double[] rawdata;
 
         ErrorProvider errorProvider = new ErrorProvider();
+
+        Stopwatch stopwatch = new Stopwatch();
+
+        delegate void SetCallBackrogressBarSpeed(int speed);
+
+        public void setProgressBarSpeed(int speed)
+        {
+            if (this.progressBar1.InvokeRequired)
+            {
+                SetCallBackrogressBarSpeed d = new SetCallBackrogressBarSpeed(setProgressBarSpeed);
+                this.Invoke(d, speed);
+            }
+            else
+            {
+                this.progressBar1.MarqueeAnimationSpeed = 1;
+            }
+        }
 
         private string Transliteration(string source)
         {
@@ -52,13 +71,16 @@ namespace MfccBaseManager
 
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "Wav Files (*.wav)|*.wav";
-            audioFile = tBPath.Text = dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : "err";           
+            audioFile = tBPath.Text = dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : "err";
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
             if (tBPath.Text != "" & tBWord.Text != "")
             {
+                stopwatch.Start();
+                backgroundWorker1.RunWorkerAsync();
+
                 try
                 {
                     WavData.ReadWavDataChunk(audioFile);
@@ -68,18 +90,18 @@ namespace MfccBaseManager
                     MessageBox.Show(String.Format(ex.Message), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                double[] rawdata = WavData.NornalizeData;
-                mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
+                //double[] rawdata = WavData.NornalizeData;
+                //mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
 
-                string mfccString = "";
-                for (int i = 0; i < mfcc.Length; i++)
-                    mfccString += mfcc[i] + "/";
-                mfccString = mfccString.Substring(0, mfccString.Length - 1);
+                //string mfccString = "";
+                //for (int i = 0; i < mfcc.Length; i++)
+                //    mfccString += mfcc[i] + "/";
+                //mfccString = mfccString.Substring(0, mfccString.Length - 1);
 
-                using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
-                {
-                    streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
-                }
+                //using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+                //{
+                //    streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
+                //}
             }
             else
             {
@@ -111,7 +133,33 @@ namespace MfccBaseManager
 
                     samplesMFCC.Add(line[0], mfccs);
                 }
-            }          
+            }
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //this.Cursor = Cursors.WaitCursor;
+            setProgressBarSpeed(1);
+            rawdata = WavData.NornalizeData;
+            mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
+            string mfccString = "";
+            for (int i = 0; i < mfcc.Length; i++)
+                mfccString += mfcc[i] + "/";
+            mfccString = mfccString.Substring(0, mfccString.Length - 1);
+
+            using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+            {
+                streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
+            }
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //this.Cursor = Cursors.Default;
+            TimeSpan interval = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds);
+            toolStripStatusLabel1.Text = String.Format("Затрачено времени: {0}:{1}:{2}.{3}", interval.Hours, interval.Minutes, interval.Seconds, interval.Milliseconds);
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            progressBar1.Value = 100;
         }
 
 
