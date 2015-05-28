@@ -8,7 +8,7 @@ namespace SubtitleCreator
 {
     static class Constants
     {
-        //Коэффициенты окга Хэмминга
+        //Коэффициенты окна Хэмминга
         /// <summary>
         ///  alpha = 0,543478260869565
         /// </summary>

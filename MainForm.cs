@@ -85,21 +85,8 @@ namespace MfccBaseManager
                 }
                 catch (WavException ex)
                 {
-                    MessageBox.Show(String.Format(ex.Message), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                //double[] rawdata = WavData.NornalizeData;
-                //mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
-
-                //string mfccString = "";
-                //for (int i = 0; i < mfcc.Length; i++)
-                //    mfccString += mfcc[i] + "/";
-                //mfccString = mfccString.Substring(0, mfccString.Length - 1);
-
-                //using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
-                //{
-                //    streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
-                //}
             }
             else
             {
@@ -134,9 +121,33 @@ namespace MfccBaseManager
             }
         }
 
+        private double[] StringToDouble(string str)
+        {
+            double[] array = new double[12];
+            string[] part = new string[2];
+            string[] arrayStr = new string[12];
+
+            part = str.Split(';');
+            arrayStr = part[1].Split('/');
+
+            for (int i = 0; i < array.Length; i++)
+                Double.TryParse(arrayStr[i], out array[i]);
+
+            return array;
+        }
+
+        private string DoubleToString(double[] array)
+        {
+            string str = "";
+            for (int i = 0; i < array.Length; i++)
+                str += array[i] + "/";
+            str = str.Substring(0, str.Length - 1);
+            return str;
+        }
+
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            //this.Cursor = Cursors.WaitCursor;
+            this.Cursor = Cursors.WaitCursor;
             word = tBWord.Text;
             setProgressBarSpeed(1);
             rawdata = WavData.NornalizeData;
@@ -154,7 +165,7 @@ namespace MfccBaseManager
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //this.Cursor = Cursors.Default;
+            this.Cursor = Cursors.Default;
             TimeSpan interval = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds);
             toolStripStatusLabel1.Text = String.Format("Затрачено времени: {0}:{1}:{2}.{3}", interval.Hours, interval.Minutes, interval.Seconds, interval.Milliseconds);
             progressBar1.Style = ProgressBarStyle.Blocks;
@@ -163,17 +174,21 @@ namespace MfccBaseManager
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //TODO: метод парсинг DoubleToString StringToDouble
-            StreamReader str = new StreamReader(pathToBase, Encoding.UTF8);
-            while (!str.EndOfStream)
-            {
-                string st = str.ReadLine();
-                if (st.StartsWith(tBWord.Text + ";"))
-                {
-                    MessageBox.Show(st);
-                    break;
-                }
-            }
+            //StreamReader str = new StreamReader(pathToBase, Encoding.UTF8);
+            //while (!str.EndOfStream)
+            //{
+            //    string st = str.ReadLine();
+            //    if (st.StartsWith(tBWord.Text + ";"))
+            //    {
+            //        MessageBox.Show(st);
+            //        break;
+            //    }
+            //}
+
+            //MessageBox.Show(DoubleToString(new double[] { 1, 2, 2, 3, 4 }));
+            //double[] temp = new double[12];
+            //temp = StringToDouble("Один;115,902755904026/26,4175781482317/-19,4969240820016/15,9409905913534/-10,4284405539948/2,96120634212882/0,839603731203302/-3,54910751739161/7,03148074595154/-3,38572657631652/4,31563689768913/-1,83372751201521");
+            //MessageBox.Show(DoubleToString(temp));
         }
 
 
