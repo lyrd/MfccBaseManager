@@ -67,8 +67,6 @@ namespace MfccBaseManager
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            word = tBWord.Text;
-
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "Wav Files (*.wav)|*.wav";
             audioFile = tBPath.Text = dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : "err";
@@ -139,6 +137,7 @@ namespace MfccBaseManager
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             //this.Cursor = Cursors.WaitCursor;
+            word = tBWord.Text;
             setProgressBarSpeed(1);
             rawdata = WavData.NornalizeData;
             mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
@@ -160,6 +159,21 @@ namespace MfccBaseManager
             toolStripStatusLabel1.Text = String.Format("Затрачено времени: {0}:{1}:{2}.{3}", interval.Hours, interval.Minutes, interval.Seconds, interval.Milliseconds);
             progressBar1.Style = ProgressBarStyle.Blocks;
             progressBar1.Value = 100;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //TODO: метод парсинг DoubleToString StringToDouble
+            StreamReader str = new StreamReader(pathToBase, Encoding.UTF8);
+            while (!str.EndOfStream)
+            {
+                string st = str.ReadLine();
+                if (st.StartsWith(tBWord.Text + ";"))
+                {
+                    MessageBox.Show(st);
+                    break;
+                }
+            }
         }
 
 
