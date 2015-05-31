@@ -76,6 +76,8 @@ namespace MfccBaseManager
         {
             if (tBPath.Text != "" & tBWord.Text != "")
             {
+                word = tBWord.Text;
+                progressBar1.Style = ProgressBarStyle.Marquee;
                 stopwatch.Start();
                 backgroundWorker1.RunWorkerAsync();
 
@@ -148,7 +150,7 @@ namespace MfccBaseManager
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
-            word = tBWord.Text;
+            //word = tBWord.Text;
             setProgressBarSpeed(1);
             rawdata = WavData.NornalizeData;
             mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
@@ -189,6 +191,27 @@ namespace MfccBaseManager
             //double[] temp = new double[12];
             //temp = StringToDouble("Один;115,902755904026/26,4175781482317/-19,4969240820016/15,9409905913534/-10,4284405539948/2,96120634212882/0,839603731203302/-3,54910751739161/7,03148074595154/-3,38572657631652/4,31563689768913/-1,83372751201521");
             //MessageBox.Show(DoubleToString(temp));
+        }
+
+        private void tBWord_MouseClick(object sender, MouseEventArgs e)
+        {
+            tBPath.Text = "";
+            tBWord.Text = "";
+            stopwatch.Reset();
+            samplesMFCC.Clear();
+            word = "";
+            audioFile = "";
+
+            toolStripStatusLabel1.Text = "";
+
+            progressBar1.Value = 0;
+
+            try
+            {
+                Array.Clear(mfcc, 0, mfcc.Length);
+                Array.Clear(rawdata, 0, rawdata.Length);
+            }
+            catch { }
         }
 
 

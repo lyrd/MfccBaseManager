@@ -116,6 +116,7 @@
             this.tBWord.Name = "tBWord";
             this.tBWord.Size = new System.Drawing.Size(100, 20);
             this.tBWord.TabIndex = 0;
+            this.tBWord.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tBWord_MouseClick);
             // 
             // btnStart
             // 
