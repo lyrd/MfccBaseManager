@@ -22,6 +22,7 @@ namespace MfccBaseManager
         }
 
         private string pathToBase = "mfccBase.mfcc";
+        private string pathToTempBase = "BaseTemp.mfcc";
         private Dictionary<string, double[]> samplesMFCC = new Dictionary<string, double[]>();
         private string word = "";
         private double[] mfcc;
@@ -213,7 +214,7 @@ namespace MfccBaseManager
 
                     mfccString = mfccString.Substring(0, mfccString.Length - 1);
 
-                    using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+                    using (StreamWriter streamwriter = new StreamWriter(pathToTempBase, true, Encoding.UTF8))
                     {
                         streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
                     }
@@ -238,7 +239,7 @@ namespace MfccBaseManager
                     mfccString += mfcc[i] + "/";
                 mfccString = mfccString.Substring(0, mfccString.Length - 1);
 
-                using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+                using (StreamWriter streamwriter = new StreamWriter(pathToTempBase, true, Encoding.UTF8))
                 {
                     streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
                 }
@@ -277,13 +278,13 @@ namespace MfccBaseManager
             //    temp += audioFiles[i] + "\r\n";
             //MessageBox.Show(temp);
 
-            ReadFromDataBase(ref samplesMFCC, pathToBase);
+            ReadFromDataBase(ref samplesMFCC, pathToTempBase);
             
             ICollection<string> keys = samplesMFCC.Keys;
 
             foreach (string i in keys)
             {
-            using (StreamWriter streamwriter = new StreamWriter("qwerty.txt", true, Encoding.UTF8))
+                using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
             {
                 streamwriter.WriteLine(String.Format("{0};{1}", i, DoubleToString((samplesMFCC[i]))));
             }
