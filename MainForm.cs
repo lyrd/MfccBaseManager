@@ -120,8 +120,8 @@ namespace MfccBaseManager
                 while (true)
                 {
                     string[] line = new string[2];
-                    string[] array = new string[12];
-                    double[] mfccs = new double[12];
+                    string[] array = new string[Constants.mfccSize];
+                    double[] mfccs = new double[Constants.mfccSize];
 
                     string temp = streamReader.ReadLine();
 
@@ -151,9 +151,85 @@ namespace MfccBaseManager
             }
         }
 
+        private List<string> GetWords(string pathToBase)
+        {
+            List<string> listOfWords = new List<string>();
+
+            using (StreamReader streamReader = new StreamReader(pathToBase, Encoding.UTF8))
+            {            
+                while (true)
+                {
+                    string[] line = new string[2];
+                    string[] array = new string[Constants.mfccSize];
+                    double[] mfccs = new double[Constants.mfccSize];
+
+                    string temp = streamReader.ReadLine();
+
+                    if (temp == null) break;
+
+                    line = temp.Split(';');
+                    array = line[1].Split('/');
+
+                    for (int i = 0; i < array.Length; i++)
+                        Double.TryParse(array[i], out mfccs[i]);
+
+                    if (listOfWords.Contains(line[0]))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        listOfWords.Add(line[0]);
+                    }
+                }
+            }
+
+            return listOfWords;
+        }
+
+        private void Average(List<string> words, string pathToBase)
+        {
+            List<double[]> mfccsList = new List<double[]>();
+            double[] resultArray = new double[Constants.mfccSize];
+
+            using (StreamReader streamReader = new StreamReader(pathToBase, Encoding.UTF8))
+            {
+                foreach (string word in words)
+                {
+                    while (true)
+                    {
+                        string[] line = new string[2];
+                        string[] array = new string[Constants.mfccSize];
+                        double[] mfccs = new double[Constants.mfccSize];
+
+                        string temp = streamReader.ReadLine();
+
+                        if (temp == null) break;
+                       
+                        if (temp.Contains(word + ";"))
+                        {
+                            line = temp.Split(';');
+                            array = line[1].Split('/');
+
+                            for (int i = 0; i < array.Length; i++)
+                                Double.TryParse(array[i], out mfccs[i]);
+
+                            mfccsList.Add(mfccs);
+                        }
+
+                        for (int i = 0; i < Constants.mfccSize; i++)
+                            for (int j = 0; j < mfccsList.Count; j++)
+                            {
+
+                            }
+                    }
+                }
+            }
+        }
+
         private double[] Summation(double[] array1, double[] array2)
         {
-            double[] resultArray = new double[12];
+            double[] resultArray = new double[Constants.mfccSize];
 
             for (int i = 0; i < resultArray.Length; i++)
                 resultArray[i] = (array1[i] + array2[i]) / 2d;
@@ -163,9 +239,9 @@ namespace MfccBaseManager
 
         private double[] StringToDouble(string str)
         {
-            double[] array = new double[12];
+            double[] array = new double[Constants.mfccSize];
             string[] part = new string[2];
-            string[] arrayStr = new string[12];
+            string[] arrayStr = new string[Constants.mfccSize];
 
             part = str.Split(';');
             arrayStr = part[1].Split('/');
@@ -255,7 +331,7 @@ namespace MfccBaseManager
             progressBar1.Value = 100;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnAverage_Click(object sender, EventArgs e)
         {
             //StreamReader str = new StreamReader(pathToBase, Encoding.UTF8);
             //while (!str.EndOfStream)
@@ -310,6 +386,16 @@ namespace MfccBaseManager
                 Array.Clear(rawdata, 0, rawdata.Length);
             }
             catch { }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //List<string> temp = new List<string>();
+            //temp = GetWords(pathToTempBase);
+
+            //foreach (string i in temp)
+            //    MessageBox.Show(i);
+            Average(GetWords(pathToTempBase), pathToTempBase);
         }
 
 

@@ -18,7 +18,9 @@ namespace SubtitleCreator
         /// </summary>
         public static readonly double beta = (1d - alpha); //or 0.46 or 0.46164  //public static readonly decimal betta = (1m - alpha) / 2m;
 
-        ///Количество MFCC коэффициетов
+        /// <summary>
+        ///Количество MFCC коэффициетов (12)
+        /// </summary>
         public static readonly byte mfccSize = 12;//12 10
 
         ///Диапазон частот
