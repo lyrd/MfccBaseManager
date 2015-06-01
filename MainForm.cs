@@ -26,6 +26,7 @@ namespace MfccBaseManager
         private string word = "";
         private double[] mfcc;
         private string audioFile = "";
+        private string[] audioFiles;
         double[] rawdata;
 
         ErrorProvider errorProvider = new ErrorProvider();
@@ -67,37 +68,48 @@ namespace MfccBaseManager
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Wav Files (*.wav)|*.wav";
-            audioFile = tBPath.Text = dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : "err";
+            if(checkBox1.Checked)
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Multiselect = true;
+                tBPath.Visible = false;
+                dialog.Filter = "Wav Files (*.wav)|*.wav";
+                audioFiles = dialog.ShowDialog() == DialogResult.OK ? dialog.FileNames : new string[] {"err"};
+            }
+            else
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                tBPath.Visible = true;
+                dialog.Filter = "Wav Files (*.wav)|*.wav";
+                audioFile = tBPath.Text = dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : "err";
+            }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if (tBPath.Text != "" & tBWord.Text != "")
+            //if (tBPath.Text != "" & tBWord.Text != "")
             {
                 word = tBWord.Text;
                 progressBar1.Style = ProgressBarStyle.Marquee;
                 stopwatch.Start();
-                //backgroundWorker1.RunWorkerAsync();
 
-                try
-                {
-                    WavData.ReadWavDataChunk(audioFile);
-                }
-                catch (WavException ex)
-                {
-                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //try
+                //{
+                //    WavData.ReadWavDataChunk(audioFile);
+                //}
+                //catch (WavException ex)
+                //{
+                //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
 
                 backgroundWorker1.RunWorkerAsync();
             }
-            else
-            {
-                if (tBPath.Text == "") { errorProvider.SetError(tBPath, "Обязательно для заполнения"); }
-                if (tBWord.Text == "") { errorProvider.SetError(tBWord, "Обязательно для заполнения"); }
-                if (tBPath.Text == "err") { errorProvider.SetError(tBPath, "Путь не выбран"); }
-            }
+            //else
+            //{
+            //    if (tBPath.Text == "") { errorProvider.SetError(tBPath, "Обязательно для заполнения"); }
+            //    if (tBWord.Text == "") { errorProvider.SetError(tBWord, "Обязательно для заполнения"); }
+            //    if (tBPath.Text == "err") { errorProvider.SetError(tBPath, "Путь не выбран"); }
+            //}
         }
 
         private void ReadFromDataBase(ref Dictionary<string, double[]> samplesMFCC, string pathToBase)
@@ -152,18 +164,61 @@ namespace MfccBaseManager
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
-            //word = tBWord.Text;
-            setProgressBarSpeed(1);
-            rawdata = WavData.NornalizeData;
-            mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
-            string mfccString = "";
-            for (int i = 0; i < mfcc.Length; i++)
-                mfccString += mfcc[i] + "/";
-            mfccString = mfccString.Substring(0, mfccString.Length - 1);
 
-            using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+            if(checkBox1.Checked)
             {
-                streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
+                for (int j = 0; j < audioFiles.Length; j++)
+                {
+                    try
+                    {
+                        WavData.ReadWavDataChunk(audioFiles[j]);
+                    }
+                    catch (WavException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    setProgressBarSpeed(1);
+
+                    rawdata = WavData.NornalizeData;
+
+                    mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
+
+                    string mfccString = "";
+                    for (int i = 0; i < mfcc.Length; i++)
+                        mfccString += mfcc[i] + "/";
+
+                    mfccString = mfccString.Substring(0, mfccString.Length - 1);
+
+                    using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+                    {
+                        streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    WavData.ReadWavDataChunk(audioFile);
+                }
+                catch (WavException ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                setProgressBarSpeed(1);
+                rawdata = WavData.NornalizeData;
+                mfcc = MFCC.Transform(ref rawdata, 0, WavData.SampleNumber, Constants.mfccSize, Constants.sampleRate, Constants.mfccFreqMin, Constants.mfccFreqMax);
+                string mfccString = "";
+                for (int i = 0; i < mfcc.Length; i++)
+                    mfccString += mfcc[i] + "/";
+                mfccString = mfccString.Substring(0, mfccString.Length - 1);
+
+                using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+                {
+                    streamwriter.WriteLine(String.Format("{0};{1}", word, mfccString));
+                }
             }
         }
 
@@ -193,6 +248,12 @@ namespace MfccBaseManager
             //double[] temp = new double[12];
             //temp = StringToDouble("Один;115,902755904026/26,4175781482317/-19,4969240820016/15,9409905913534/-10,4284405539948/2,96120634212882/0,839603731203302/-3,54910751739161/7,03148074595154/-3,38572657631652/4,31563689768913/-1,83372751201521");
             //MessageBox.Show(DoubleToString(temp));
+
+            string temp="";
+            for (int i = 0; i < audioFiles.Length; i++)
+                temp += audioFiles[i] + "\r\n";
+            MessageBox.Show(temp);
+
         }
 
         private void tBWord_MouseClick(object sender, MouseEventArgs e)
