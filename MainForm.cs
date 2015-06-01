@@ -79,7 +79,7 @@ namespace MfccBaseManager
                 word = tBWord.Text;
                 progressBar1.Style = ProgressBarStyle.Marquee;
                 stopwatch.Start();
-                backgroundWorker1.RunWorkerAsync();
+                //backgroundWorker1.RunWorkerAsync();
 
                 try
                 {
@@ -89,6 +89,8 @@ namespace MfccBaseManager
                 {
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
+                backgroundWorker1.RunWorkerAsync();
             }
             else
             {
