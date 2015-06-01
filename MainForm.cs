@@ -132,9 +132,32 @@ namespace MfccBaseManager
                     for (int i = 0; i < array.Length; i++)
                         Double.TryParse(array[i], out mfccs[i]);
 
-                    samplesMFCC.Add(line[0], mfccs);
+                    if (samplesMFCC.ContainsKey(line[0]))
+                    {
+                        double[] arrayTemp;
+
+                        samplesMFCC.TryGetValue(line[0], out arrayTemp);
+
+                        samplesMFCC.Remove(line[0]);
+
+                        samplesMFCC.Add(line[0], Summation(mfccs, arrayTemp));
+                    }
+                    else
+                    {
+                        samplesMFCC.Add(line[0], mfccs);
+                    }
                 }
             }
+        }
+
+        private double[] Summation(double[] array1, double[] array2)
+        {
+            double[] resultArray = new double[12];
+
+            for (int i = 0; i < resultArray.Length; i++)
+                resultArray[i] = (array1[i] + array2[i]) / 2d;
+
+            return resultArray;
         }
 
         private double[] StringToDouble(string str)
@@ -249,11 +272,22 @@ namespace MfccBaseManager
             //temp = StringToDouble("Один;115,902755904026/26,4175781482317/-19,4969240820016/15,9409905913534/-10,4284405539948/2,96120634212882/0,839603731203302/-3,54910751739161/7,03148074595154/-3,38572657631652/4,31563689768913/-1,83372751201521");
             //MessageBox.Show(DoubleToString(temp));
 
-            string temp="";
-            for (int i = 0; i < audioFiles.Length; i++)
-                temp += audioFiles[i] + "\r\n";
-            MessageBox.Show(temp);
+            //string temp="";
+            //for (int i = 0; i < audioFiles.Length; i++)
+            //    temp += audioFiles[i] + "\r\n";
+            //MessageBox.Show(temp);
 
+            ReadFromDataBase(ref samplesMFCC, pathToBase);
+            
+            ICollection<string> keys = samplesMFCC.Keys;
+
+            foreach (string i in keys)
+            {
+            using (StreamWriter streamwriter = new StreamWriter("qwerty.txt", true, Encoding.UTF8))
+            {
+                streamwriter.WriteLine(String.Format("{0};{1}", i, DoubleToString((samplesMFCC[i]))));
+            }
+            }
         }
 
         private void tBWord_MouseClick(object sender, MouseEventArgs e)
