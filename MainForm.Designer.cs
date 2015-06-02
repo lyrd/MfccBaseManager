@@ -34,7 +34,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.tBWord = new System.Windows.Forms.TextBox();
             this.btnAverage = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
@@ -42,7 +41,6 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -53,14 +51,16 @@
             // 
             this.tBPath.BackColor = System.Drawing.SystemColors.Window;
             this.tBPath.Location = new System.Drawing.Point(6, 19);
+            this.tBPath.Multiline = true;
             this.tBPath.Name = "tBPath";
             this.tBPath.ReadOnly = true;
-            this.tBPath.Size = new System.Drawing.Size(323, 20);
+            this.tBPath.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tBPath.Size = new System.Drawing.Size(484, 174);
             this.tBPath.TabIndex = 0;
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(349, 17);
+            this.btnOpen.Location = new System.Drawing.Point(496, 19);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 2;
@@ -74,7 +74,7 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(442, 140);
+            this.groupBox1.Size = new System.Drawing.Size(593, 282);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Добавление слова в базу";
@@ -85,32 +85,20 @@
             this.groupBox3.Controls.Add(this.btnOpen);
             this.groupBox3.Location = new System.Drawing.Point(6, 77);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(430, 52);
+            this.groupBox3.Size = new System.Drawing.Size(580, 199);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Путь к звуковому файлу";
+            this.groupBox3.Text = "Звуковые файлы";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.tBWord);
             this.groupBox2.Location = new System.Drawing.Point(6, 19);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(430, 52);
+            this.groupBox2.Size = new System.Drawing.Size(580, 52);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Слово";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(349, 16);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tBWord
             // 
@@ -122,7 +110,7 @@
             // 
             // btnAverage
             // 
-            this.btnAverage.Location = new System.Drawing.Point(379, 158);
+            this.btnAverage.Location = new System.Drawing.Point(530, 300);
             this.btnAverage.Name = "btnAverage";
             this.btnAverage.Size = new System.Drawing.Size(75, 23);
             this.btnAverage.TabIndex = 1;
@@ -132,7 +120,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(12, 158);
+            this.btnStart.Location = new System.Drawing.Point(12, 300);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 5;
@@ -144,9 +132,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 219);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 359);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(466, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(616, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
@@ -158,10 +146,10 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 187);
+            this.progressBar1.Location = new System.Drawing.Point(12, 329);
             this.progressBar1.MarqueeAnimationSpeed = 0;
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(442, 23);
+            this.progressBar1.Size = new System.Drawing.Size(593, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 7;
             // 
@@ -170,33 +158,19 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(374, 162);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 8;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.Visible = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(466, 241);
+            this.ClientSize = new System.Drawing.Size(616, 381);
             this.Controls.Add(this.btnAverage);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(482, 280);
-            this.MinimumSize = new System.Drawing.Size(482, 280);
+            this.MaximumSize = new System.Drawing.Size(632, 420);
+            this.MinimumSize = new System.Drawing.Size(632, 420);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MFCC Base Manager";
@@ -226,8 +200,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Button btnAverage;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button1;
     }
 }
 
