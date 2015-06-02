@@ -151,11 +151,11 @@ namespace MfccBaseManager
             }
         }
 
-        private List<string> GetWords(string pathToBase)
+        private List<string> GetWords(string pathToTempBase)
         {
             List<string> listOfWords = new List<string>();
 
-            using (StreamReader streamReader = new StreamReader(pathToBase, Encoding.UTF8))
+            using (StreamReader streamReader = new StreamReader(pathToTempBase, Encoding.UTF8))
             {            
                 while (true)
                 {
@@ -169,9 +169,6 @@ namespace MfccBaseManager
 
                     line = temp.Split(';');
                     array = line[1].Split('/');
-
-                    for (int i = 0; i < array.Length; i++)
-                        Double.TryParse(array[i], out mfccs[i]);
 
                     if (listOfWords.Contains(line[0]))
                     {
@@ -187,14 +184,17 @@ namespace MfccBaseManager
             return listOfWords;
         }
 
-        private void Average(List<string> words, string pathToBase)
+        private void Average(List<string> words, string pathToBase, string pathToTempBase)
         {
             List<double[]> mfccsList = new List<double[]>();
             double[] resultArray = new double[Constants.mfccSize];
 
-            using (StreamReader streamReader = new StreamReader(pathToBase, Encoding.UTF8))
+            foreach (string word in words)
             {
-                foreach (string word in words)
+                mfccsList.Clear();
+                Array.Clear(resultArray, 0, resultArray.Length);
+
+                using (StreamReader streamReader = new StreamReader(pathToTempBase, Encoding.UTF8))
                 {
                     while (true)
                     {
@@ -205,7 +205,7 @@ namespace MfccBaseManager
                         string temp = streamReader.ReadLine();
 
                         if (temp == null) break;
-                       
+
                         if (temp.Contains(word + ";"))
                         {
                             line = temp.Split(';');
@@ -216,13 +216,24 @@ namespace MfccBaseManager
 
                             mfccsList.Add(mfccs);
                         }
-
-                        for (int i = 0; i < Constants.mfccSize; i++)
-                            for (int j = 0; j < mfccsList.Count; j++)
-                            {
-
-                            }
                     }
+                }
+
+                for (int i = 0; i < Constants.mfccSize; i++)
+                {
+                    double sum = 0;
+
+                    foreach (double[] list in mfccsList)
+                    {
+                        sum += list[i];
+                    }
+
+                    resultArray[i] = sum / mfccsList.Count;
+                }
+
+                using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+                {
+                    streamwriter.WriteLine(String.Format("{0};{1}", word, DoubleToString(resultArray)));
                 }
             }
         }
@@ -354,17 +365,21 @@ namespace MfccBaseManager
             //    temp += audioFiles[i] + "\r\n";
             //MessageBox.Show(temp);
 
-            ReadFromDataBase(ref samplesMFCC, pathToTempBase);
-            
-            ICollection<string> keys = samplesMFCC.Keys;
+            //---------------------------------------------------------------
+            //ReadFromDataBase(ref samplesMFCC, pathToTempBase);
 
-            foreach (string i in keys)
-            {
-                using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
-            {
-                streamwriter.WriteLine(String.Format("{0};{1}", i, DoubleToString((samplesMFCC[i]))));
-            }
-            }
+            //ICollection<string> keys = samplesMFCC.Keys;
+
+            //foreach (string i in keys)
+            //{
+            //    using (StreamWriter streamwriter = new StreamWriter(pathToBase, true, Encoding.UTF8))
+            //    {
+            //        streamwriter.WriteLine(String.Format("{0};{1}", i, DoubleToString((samplesMFCC[i]))));
+            //    }
+            //}
+            //-----------------------------------------------------------------------
+            Average(GetWords(pathToTempBase), pathToBase, pathToTempBase);
+            MessageBox.Show("!!!");
         }
 
         private void tBWord_MouseClick(object sender, MouseEventArgs e)
@@ -395,7 +410,6 @@ namespace MfccBaseManager
 
             //foreach (string i in temp)
             //    MessageBox.Show(i);
-            Average(GetWords(pathToTempBase), pathToTempBase);
         }
 
 
