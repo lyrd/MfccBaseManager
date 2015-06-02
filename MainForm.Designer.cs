@@ -35,16 +35,19 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tBWord = new System.Windows.Forms.TextBox();
-            this.btnAverage = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.baseTSMI = new System.Windows.Forms.ToolStripMenuItem();
+            this.averageTSMI = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tBPath
@@ -70,11 +73,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.progressBar1);
             this.groupBox1.Controls.Add(this.groupBox3);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Controls.Add(this.btnStart);
+            this.groupBox1.Location = new System.Drawing.Point(12, 27);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(593, 282);
+            this.groupBox1.Size = new System.Drawing.Size(593, 347);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Добавление слова в базу";
@@ -108,19 +113,9 @@
             this.tBWord.TabIndex = 0;
             this.tBWord.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tBWord_MouseClick);
             // 
-            // btnAverage
-            // 
-            this.btnAverage.Location = new System.Drawing.Point(530, 300);
-            this.btnAverage.Name = "btnAverage";
-            this.btnAverage.Size = new System.Drawing.Size(75, 23);
-            this.btnAverage.TabIndex = 1;
-            this.btnAverage.Text = "Усреднить";
-            this.btnAverage.UseVisualStyleBackColor = true;
-            this.btnAverage.Click += new System.EventHandler(this.btnAverage_Click);
-            // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(12, 300);
+            this.btnStart.Location = new System.Drawing.Point(6, 282);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 5;
@@ -132,7 +127,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 359);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 380);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(616, 22);
             this.statusStrip1.SizingGrip = false;
@@ -146,10 +141,10 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 329);
+            this.progressBar1.Location = new System.Drawing.Point(6, 311);
             this.progressBar1.MarqueeAnimationSpeed = 0;
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(593, 23);
+            this.progressBar1.Size = new System.Drawing.Size(581, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 7;
             // 
@@ -158,19 +153,43 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.baseTSMI});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(616, 24);
+            this.menuStrip1.TabIndex = 7;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // baseTSMI
+            // 
+            this.baseTSMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.averageTSMI});
+            this.baseTSMI.Name = "baseTSMI";
+            this.baseTSMI.Size = new System.Drawing.Size(43, 20);
+            this.baseTSMI.Text = "База";
+            // 
+            // averageTSMI
+            // 
+            this.averageTSMI.Name = "averageTSMI";
+            this.averageTSMI.Size = new System.Drawing.Size(177, 22);
+            this.averageTSMI.Text = "Усреднить вектора";
+            this.averageTSMI.Click += new System.EventHandler(this.averageTSMI_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(616, 381);
-            this.Controls.Add(this.btnAverage);
-            this.Controls.Add(this.progressBar1);
+            this.ClientSize = new System.Drawing.Size(616, 402);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.btnStart);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(632, 420);
-            this.MinimumSize = new System.Drawing.Size(632, 420);
+            this.MainMenuStrip = this.menuStrip1;
+            this.MaximumSize = new System.Drawing.Size(632, 441);
+            this.MinimumSize = new System.Drawing.Size(632, 441);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MFCC Base Manager";
@@ -181,6 +200,8 @@
             this.groupBox2.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -199,7 +220,9 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.Button btnAverage;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem baseTSMI;
+        private System.Windows.Forms.ToolStripMenuItem averageTSMI;
     }
 }
 

@@ -24,7 +24,7 @@ namespace SubtitleCreator
         public static readonly byte mfccSize = 12;//12 10
 
         ///Диапазон частот
-        public static readonly short mfccFreqMin = 300;
+        public static readonly short mfccFreqMin = 300;//300
         public static readonly short mfccFreqMax = 4000;//4000 8000
 
         public static readonly uint sampleRate = 44100;

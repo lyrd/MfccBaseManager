@@ -206,7 +206,7 @@ namespace MfccBaseManager
             }
         }
 
-        private void btnAverage_Click(object sender, EventArgs e)
+        private void averageTSMI_Click(object sender, EventArgs e)
         {
             Average(GetWords(pathToTempBase), pathToBase, pathToTempBase);
         }
